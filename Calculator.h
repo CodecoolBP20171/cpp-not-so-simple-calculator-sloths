@@ -20,6 +20,7 @@ private:
 
     std::vector<ProblemPart> solveSingleOperation(std::vector<ProblemPart> problemParts);
 
+    void updateProblemParts(std::vector<ProblemPart> &problemParts, int index, double newNumber) const;
 };
 
 
