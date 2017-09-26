@@ -1,45 +1,56 @@
-//
-// Created by meszi on 2017.09.25..
-//
-
 #include "Calculator.h"
 
 
 double Calculator::evaluate(std::string problem) {
+    problem = removeWhiteSpace(problem);
+    std::vector<ProblemPart> problemParts = parseProblem(problem);
+
+}
+
+std::vector<ProblemPart> Calculator::parseProblem(std::string problem) {
     std::vector<ProblemPart> problemParts;
-    std::string currentNumber = "";
+    std::string currentNumber;
+
     for (int i = 0; i < problem.length(); ++i) {
-        if (!isAnOperation(problem[i])) {
-            currentNumber += problem[i];
+        char currentCharacter = problem[i];
+        if (!isAnOperation(currentCharacter)) {
+            currentNumber += currentCharacter;
         }
         else {
             problemParts.push_back(ProblemPart(currentNumber, NUMBER));
             currentNumber = "";
-            ProblemPart currentOperation(std::to_string(problem[i]));
-            switch (problem[i]) {
+
+            std::string currentOperation;
+            currentOperation += currentCharacter;
+
+            switch (currentCharacter) {
                 case '+':
-                    currentOperation.setPartType(ADDITION);
+                    problemParts.push_back(ProblemPart(currentOperation, ADDITION));
                     break;
                 case '-':
-                    currentOperation.setPartType(SUBTRACTION);
+                    problemParts.push_back(ProblemPart(currentOperation, SUBTRACTION));
                     break;
                 case '*':
-                    currentOperation.setPartType(MULTIPLICATION);
+                    problemParts.push_back(ProblemPart(currentOperation, MULTIPLICATION));
                     break;
                 case '/':
-                    currentOperation.setPartType(DIVISION);
+                    problemParts.push_back(ProblemPart(currentOperation, DIVISION));
                     break;
 
             }
-            problemParts.push_back(currentOperation);
         }
     }
-    cout << problemParts.size() << endl;
+    problemParts.push_back(ProblemPart(currentNumber, NUMBER));
 
+    return problemParts;
 }
 
 bool Calculator::isAnOperation(char character) {
     if (character == '/' || character == '*' || character == '+' || character == '-')
         return true;
     return false;
+}
+
+std::string Calculator::removeWhiteSpace(std::string problem) {
+    return problem;
 }

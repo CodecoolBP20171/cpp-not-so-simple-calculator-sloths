@@ -1,7 +1,3 @@
-//
-// Created by meszi on 2017.09.25..
-//
-
 #ifndef CPP_NOT_SO_SIMPLE_CALCULATOR_SLOTHS_CALCUALTOR_H
 #define CPP_NOT_SO_SIMPLE_CALCULATOR_SLOTHS_CALCUALTOR_H
 
@@ -17,6 +13,11 @@ public:
 
 private:
     bool isAnOperation(char character);
+
+    std::string removeWhiteSpace(std::string problem);
+
+    std::vector<ProblemPart> parseProblem(std::string problem);
+
 };
 
 
