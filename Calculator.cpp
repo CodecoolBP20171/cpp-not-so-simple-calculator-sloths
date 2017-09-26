@@ -56,6 +56,9 @@ bool Calculator::isAnOperation(char character) {
 }
 
 std::string Calculator::removeWhiteSpace(std::string problem) {
+    while (problem.find(" ") != std::string::npos) {
+        problem.replace(problem.find(" "), 1, "");
+    }
     return problem;
 }
 
@@ -70,14 +73,14 @@ std::vector<ProblemPart> Calculator::solveSingleOperation(std::vector<ProblemPar
             problemParts[index -1] = ProblemPart(std::to_string(newNumber), NUMBER);
             problemParts.erase(problemParts.begin() + index + 1);
             problemParts.erase(problemParts.begin() + index);
-            solveSingleOperation(problemParts);
+            problemParts = solveSingleOperation(problemParts);
         }
         else if (part.getPartType() == MULTIPLICATION) {
             newNumber = problemParts.at(index - 1).getNumber() * problemParts.at(index + 1).getNumber();
             problemParts[index -1] = ProblemPart(std::to_string(newNumber), NUMBER);
             problemParts.erase(problemParts.begin() + index + 1);
             problemParts.erase(problemParts.begin() + index);
-            solveSingleOperation(problemParts);
+            problemParts = solveSingleOperation(problemParts);
         }
         index++;
     }
@@ -89,14 +92,14 @@ std::vector<ProblemPart> Calculator::solveSingleOperation(std::vector<ProblemPar
             problemParts[index -1] = ProblemPart(std::to_string(newNumber), NUMBER);
             problemParts.erase(problemParts.begin() + index + 1);
             problemParts.erase(problemParts.begin() + index);
-            solveSingleOperation(problemParts);
+            problemParts = solveSingleOperation(problemParts);
         }
         else if (part.getPartType() == SUBTRACTION) {
             newNumber = problemParts.at(index - 1).getNumber() - problemParts.at(index + 1).getNumber();
             problemParts[index -1] = ProblemPart(std::to_string(newNumber), NUMBER);
             problemParts.erase(problemParts.begin() + index + 1);
             problemParts.erase(problemParts.begin() + index);
-            solveSingleOperation(problemParts);
+            problemParts = solveSingleOperation(problemParts);
         }
         index++;
     }
