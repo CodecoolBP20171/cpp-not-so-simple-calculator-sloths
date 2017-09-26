@@ -5,6 +5,6 @@ ProblemPart::ProblemPart(std::string part, PartType  partType) {
     this->partType = partType;
 }
 
-std::string ProblemPart::print() {
-    return part;
+void ProblemPart::print() {
+    std::cout << part << std::endl;
 }

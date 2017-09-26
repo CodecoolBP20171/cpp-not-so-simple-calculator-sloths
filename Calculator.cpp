@@ -4,7 +4,11 @@
 double Calculator::evaluate(std::string problem) {
     problem = removeWhiteSpace(problem);
     std::vector<ProblemPart> problemParts = parseProblem(problem);
-
+    problemParts = solveSingleOperation(problemParts);
+    for (ProblemPart part : problemParts) {
+        part.print();
+    }
+    return problemParts[0].getNumber();
 }
 
 std::vector<ProblemPart> Calculator::parseProblem(std::string problem) {
@@ -53,4 +57,48 @@ bool Calculator::isAnOperation(char character) {
 
 std::string Calculator::removeWhiteSpace(std::string problem) {
     return problem;
+}
+
+std::vector<ProblemPart> Calculator::solveSingleOperation(std::vector<ProblemPart> problemParts) {
+    int index = 0;
+    double newNumber;
+
+    for (ProblemPart part : problemParts) {
+
+        if (part.getPartType() == DIVISION) {
+            newNumber = problemParts.at(index - 1).getNumber() / problemParts.at(index + 1).getNumber();
+            problemParts[index -1] = ProblemPart(std::to_string(newNumber), NUMBER);
+            problemParts.erase(problemParts.begin() + index + 1);
+            problemParts.erase(problemParts.begin() + index);
+            solveSingleOperation(problemParts);
+        }
+        else if (part.getPartType() == MULTIPLICATION) {
+            newNumber = problemParts.at(index - 1).getNumber() * problemParts.at(index + 1).getNumber();
+            problemParts[index -1] = ProblemPart(std::to_string(newNumber), NUMBER);
+            problemParts.erase(problemParts.begin() + index + 1);
+            problemParts.erase(problemParts.begin() + index);
+            solveSingleOperation(problemParts);
+        }
+        index++;
+    }
+    index = 0;
+    for (ProblemPart part : problemParts) {
+
+        if (part.getPartType() == ADDITION) {
+            newNumber = problemParts.at(index - 1).getNumber() + problemParts.at(index + 1).getNumber();
+            problemParts[index -1] = ProblemPart(std::to_string(newNumber), NUMBER);
+            problemParts.erase(problemParts.begin() + index + 1);
+            problemParts.erase(problemParts.begin() + index);
+            solveSingleOperation(problemParts);
+        }
+        else if (part.getPartType() == SUBTRACTION) {
+            newNumber = problemParts.at(index - 1).getNumber() - problemParts.at(index + 1).getNumber();
+            problemParts[index -1] = ProblemPart(std::to_string(newNumber), NUMBER);
+            problemParts.erase(problemParts.begin() + index + 1);
+            problemParts.erase(problemParts.begin() + index);
+            solveSingleOperation(problemParts);
+        }
+        index++;
+    }
+    return  problemParts;
 }

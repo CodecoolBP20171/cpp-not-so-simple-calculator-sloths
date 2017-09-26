@@ -18,6 +18,8 @@ private:
 
     std::vector<ProblemPart> parseProblem(std::string problem);
 
+    std::vector<ProblemPart> solveSingleOperation(std::vector<ProblemPart> problemParts);
+
 };
 
 
