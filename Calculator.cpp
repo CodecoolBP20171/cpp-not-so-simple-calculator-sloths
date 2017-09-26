@@ -5,6 +5,9 @@
 double Calculator::evaluate(std::string problem) {
     problem = removeWhiteSpace(problem);
     std::vector<ProblemPart> problemParts = parseProblem(problem);
+    if (problemParts[0].getPartType() == INVALID) {
+        return 0;
+    }
     problemParts = solveSingleOperation(problemParts);
     return problemParts[0].getNumber();
 }
@@ -16,7 +19,7 @@ std::vector<ProblemPart> Calculator::parseProblem(std::string problem) {
     for (int i = 0; i < problem.length(); ++i) {
         char currentCharacter = problem[i];
 
-        if (!isAnOperation(currentCharacter)) {
+        if (isNumericalCharacter(currentCharacter)) {
             currentNumber += currentCharacter;
         }
         else {
@@ -48,7 +51,10 @@ std::vector<ProblemPart> Calculator::parseProblem(std::string problem) {
                         i += 3;
                     }
                     break;
-
+                default:
+                    problemParts.clear();
+                    problemParts.push_back(ProblemPart("invalid", INVALID));
+                    return problemParts;
             }
         }
     }
@@ -57,13 +63,23 @@ std::vector<ProblemPart> Calculator::parseProblem(std::string problem) {
     return problemParts;
 }
 
-bool Calculator::isAnOperation(char character) {
-    if (character == '/' || character == '*' ||
-        character == '+' || character == '-' ||
-        character == 'r' || character == '^') {
-        return true;
+bool Calculator::isNumericalCharacter(char character) {
+    switch (character) {
+        case '.':
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            return true;
+        default:
+            return false;
     }
-    return false;
 }
 
 std::string Calculator::removeWhiteSpace(std::string problem) {

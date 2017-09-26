@@ -8,7 +8,8 @@ enum PartType {
     DIVISION,
     MULTIPLICATION,
     POWER,
-    ROOT
+    ROOT,
+    INVALID
 };
 
 #endif //CPP_NOT_SO_SIMPLE_CALCULATOR_SLOTHS_PARTTYPE_H

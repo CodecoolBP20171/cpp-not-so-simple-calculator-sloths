@@ -12,7 +12,7 @@ public:
     double evaluate(std::string problem);
 
 private:
-    bool isAnOperation(char character);
+    bool isNumericalCharacter(char character);
 
     std::string removeWhiteSpace(std::string problem);
 
