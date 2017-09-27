@@ -14,7 +14,7 @@ public:
 
 private:
     std::vector<ProblemPart> solveSingleOperation(std::vector<ProblemPart> &problemParts);
-    
+
     void updateProblemParts(std::vector<ProblemPart> &problemParts, int index, double newNumber) const;
 
     void solveThirdDegreeOperation(std::vector<ProblemPart> &problemParts);
@@ -22,6 +22,8 @@ private:
     void solveSecondDegreeOperation(std::vector<ProblemPart> &problemParts);
 
     void solveFirstDegreeOperation(std::vector<ProblemPart> &problemParts);
+
+    void solveParentheses(std::vector<ProblemPart> &problemParts);
 };
 
 

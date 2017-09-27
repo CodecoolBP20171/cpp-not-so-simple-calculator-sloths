@@ -6,5 +6,5 @@ ProblemPart::ProblemPart(std::string part, PartType  partType) {
 }
 
 void ProblemPart::print() {
-    std::cout << part << std::endl;
+    std::cout << part;
 }
