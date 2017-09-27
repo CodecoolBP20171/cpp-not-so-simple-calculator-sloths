@@ -13,15 +13,15 @@ public:
     double evaluate(std::string problem);
 
 private:
-    bool isNumericalCharacter(char character);
-
-    std::string removeWhiteSpace(std::string problem);
-
-    std::vector<ProblemPart> parseProblem(std::string problem);
-
-    std::vector<ProblemPart> solveSingleOperation(std::vector<ProblemPart> problemParts);
-
+    std::vector<ProblemPart> solveSingleOperation(std::vector<ProblemPart> &problemParts);
+    
     void updateProblemParts(std::vector<ProblemPart> &problemParts, int index, double newNumber) const;
+
+    void solveThirdDegreeOperation(std::vector<ProblemPart> &problemParts);
+
+    void solveSecondDegreeOperation(std::vector<ProblemPart> &problemParts);
+
+    void solveFirstDegreeOperation(std::vector<ProblemPart> &problemParts);
 };
 
 
