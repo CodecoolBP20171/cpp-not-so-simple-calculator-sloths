@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "ProblemPart.h"
+#include "Parser.h"
 using std::cout;
 using std::endl;
 
