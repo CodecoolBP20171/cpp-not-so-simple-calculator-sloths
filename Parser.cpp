@@ -7,9 +7,11 @@
 std::vector<ProblemPart> Parser::parseProblem(std::string &problem) {
     problem = removeWhiteSpace(problem);
     if (!isAValidProblem(problem)) {
-        throw std::invalid_argument("Problem contains unexpected character(s)!\n" + problem);
+        throw std::invalid_argument("Problem contains unexpected character(s)!\n");
     }
-    return generateProblemParts(problem);
+    std::vector<ProblemPart> problemParts = generateProblemParts(problem);
+    validateBracket(problemParts);
+    return problemParts;
 }
 
 std::vector<ProblemPart> Parser::generateProblemParts(const std::string &problem) {
@@ -29,7 +31,18 @@ std::vector<ProblemPart> Parser::generateProblemParts(const std::string &problem
         }
         if (!checkingForNumber) {
             if (!isANumber(character)) {
-                substring += character;
+                if (isABracket(character)) {
+                    if (isANumber(substring[0])) {
+                        problemParts.push_back(ProblemPart(substring, NUMBER));
+                    } else {
+                        PartType operationType = getOperationType(substring);
+                        problemParts.push_back(ProblemPart(substring, operationType));
+                    }
+                    substring = "";
+                    problemParts.push_back(parseBracket(problemParts, character));
+                } else {
+                    substring += character;
+                }
             } else {
                 PartType operationType = getOperationType(substring);
                 problemParts.push_back(ProblemPart(substring, operationType));
@@ -54,7 +67,7 @@ std::string Parser::removeWhiteSpace(std::string &problem) {
 }
 
 bool Parser::isAValidProblem(std::string &problem) {
-    std::string validCharacters("0123456789.+-*/^root");
+    std::string validCharacters("0123456789.+-*/^root()");
     for (char character : problem) {
         if (validCharacters.find(character) == std::string::npos) {
             return false;
@@ -85,5 +98,65 @@ PartType Parser::getOperationType(std::string &substring) {
             return POWER;
         default:
             return ROOT;
+    }
+}
+
+bool Parser::isABracket(char &character) {
+    if (character == '(' || character == ')') {
+        return true;
+    }
+    return false;
+}
+
+ProblemPart Parser::parseBracket(std::vector<ProblemPart> &problemParts, char &character) {
+    bool openingBracket = character == '(' ? true : false;
+    std::string newPart("");
+    if (openingBracket) {
+        newPart += character;
+        return ProblemPart(newPart, OPENING_BRACKET);
+    } else {
+        int numOfOpeningBrackets = 0;
+        int numOfClosingBrackets = 0;
+
+        for (ProblemPart part : problemParts) {
+            if (part.getPartType() == OPENING_BRACKET) {
+                ++numOfOpeningBrackets;
+                continue;
+            } else if (part.getPartType() == CLOSING_BRACKET) {
+                ++numOfClosingBrackets;
+            }
+        }
+
+        if (numOfOpeningBrackets > numOfClosingBrackets) {
+            newPart += character;
+            return ProblemPart(newPart, CLOSING_BRACKET);
+        } else {
+            throw std::invalid_argument("Missing opening bracket!\n");
+        }
+    }
+}
+
+void Parser::validateBracket(std::vector<ProblemPart> &problemParts) {
+    int numOfOpeningBrackets = 0;
+    int numOfClosingBrackets = 0;
+    bool previousIsOpening = false;
+
+    for (ProblemPart part : problemParts) {
+        if (part.getPartType() == OPENING_BRACKET) {
+            ++numOfOpeningBrackets;
+            previousIsOpening = true;
+        }else if (part.getPartType() == CLOSING_BRACKET) {
+            ++numOfClosingBrackets;
+            if (previousIsOpening) {
+                throw std::invalid_argument("Empty bracket!\n");
+            }
+            previousIsOpening = false;
+        } else {
+            previousIsOpening = false;
+        }
+    }
+
+    if (numOfClosingBrackets != numOfOpeningBrackets) {
+        throw std::invalid_argument("Missing closing bracket!\n");
     }
 }

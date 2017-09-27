@@ -16,10 +16,20 @@ public:
 
 private:
     std::string removeWhiteSpace(std::string &problem);
+
     bool isAValidProblem(std::string &problem);
+
     bool isANumber(char &character);
+
     std::vector<ProblemPart> generateProblemParts(const std::string &problem);
+
     PartType getOperationType(std::string &substring);
+
+    bool isABracket(char &character);
+
+    ProblemPart parseBracket(std::vector<ProblemPart> &problemParts, char &character);
+
+    void validateBracket(std::vector<ProblemPart> &problemParts);
 };
 
 
