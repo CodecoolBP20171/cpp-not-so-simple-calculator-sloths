@@ -12,10 +12,16 @@ double Calculator::evaluate(std::string problem) {
         return 0;
     }
     problemParts = solveSingleOperation(problemParts);
+
     return problemParts[0].getNumber();
 }
 
 std::vector<ProblemPart> Calculator::solveSingleOperation(std::vector<ProblemPart> &problemParts) {
+//    cout << "problem entering into solveSingleOp" << endl;
+//    for (ProblemPart part : problemParts) {
+//        part.print();
+//    }
+//    cout << endl;
     solveParentheses(problemParts);
     solveThirdDegreeOperation(problemParts);
     solveSecondDegreeOperation(problemParts);
@@ -30,6 +36,7 @@ void Calculator::solveFirstDegreeOperation(std::vector<ProblemPart> &problemPart
 
         if (part.getPartType() == ADDITION) {
             newNumber = problemParts.at(index - 1).getNumber() + problemParts.at(index + 1).getNumber();
+//            cout << "New number : " << newNumber << endl;
             updateProblemParts(problemParts, index, newNumber);
             if (problemParts.size() > 1) {
                 problemParts = solveSingleOperation(problemParts);
@@ -38,6 +45,7 @@ void Calculator::solveFirstDegreeOperation(std::vector<ProblemPart> &problemPart
         }
         else if (part.getPartType() == SUBTRACTION) {
             newNumber = problemParts.at(index - 1).getNumber() - problemParts.at(index + 1).getNumber();
+//            cout << "New number : " << newNumber << endl;
             updateProblemParts(problemParts, index, newNumber);
             if (problemParts.size() > 1) {
                 problemParts = solveSingleOperation(problemParts);
@@ -55,6 +63,7 @@ void Calculator::solveSecondDegreeOperation(std::vector<ProblemPart> &problemPar
 
         if (part.getPartType() == DIVISION) {
             newNumber = problemParts.at(index - 1).getNumber() / problemParts.at(index + 1).getNumber();
+//            cout << "New number : " << newNumber << endl;
             updateProblemParts(problemParts, index, newNumber);
             if (problemParts.size() > 2) {
                 problemParts = solveSingleOperation(problemParts);
@@ -63,6 +72,7 @@ void Calculator::solveSecondDegreeOperation(std::vector<ProblemPart> &problemPar
         }
         else if (part.getPartType() == MULTIPLICATION) {
             newNumber = problemParts.at(index - 1).getNumber() * problemParts.at(index + 1).getNumber();
+//            cout << "New number : " << newNumber << endl;
             updateProblemParts(problemParts, index, newNumber);
             if (problemParts.size() > 2) {
                 problemParts = solveSingleOperation(problemParts);
@@ -80,6 +90,7 @@ void Calculator::solveThirdDegreeOperation(std::vector<ProblemPart> &problemPart
 
         if (part.getPartType() == POWER) {
             newNumber = pow(problemParts.at(index - 1).getNumber(), problemParts.at(index + 1).getNumber());
+//            cout << "New number : " << newNumber << endl;
             updateProblemParts(problemParts, index, newNumber);
             if (problemParts.size() > 2) {
                 problemParts = solveSingleOperation(problemParts);
@@ -88,6 +99,7 @@ void Calculator::solveThirdDegreeOperation(std::vector<ProblemPart> &problemPart
         }
         else if (part.getPartType() == ROOT) {
             newNumber = pow(problemParts.at(index + 1).getNumber(), 1.0/problemParts.at(index - 1).getNumber());
+//            cout << "New number : " << newNumber << endl;
             updateProblemParts(problemParts, index, newNumber);
             if (problemParts.size() > 2) {
                 problemParts = solveSingleOperation(problemParts);
@@ -129,10 +141,11 @@ void Calculator::solveParentheses(std::vector<ProblemPart> &problemParts) {
                 childrenParts = solveSingleOperation(childrenParts);
 
                 std::vector<ProblemPart>::iterator iterator = problemParts.begin();
-                for (int j = 0; j < closingIndex - openingIndex; j++) {
+                for (int j = 0; j < closingIndex - openingIndex + 1; j++) {
                     problemParts.erase(iterator + openingIndex);
                 }
                 problemParts.insert(iterator + openingIndex, childrenParts[0]);
+                problemParts = solveSingleOperation(problemParts);
                 break;
             }
         }
