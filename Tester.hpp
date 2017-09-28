@@ -1,29 +1,29 @@
 #ifndef CALCULATOR_TESTER_HPP
 #define CALCULATOR_TESTER_HPP
-#include "Calculator.h"
+#include "headers/Calculator.h"
 
 class Tester {
 public:
     void run()
     {
         failedTests = 0;
+
         // Level 0
         TestAddition();
         TestSubtraction();
         TestMultiplication();
         TestDivision();
         TestFormulaWithSpaces();
-/*
+
         // Level 1
-        TestRoot();
         TestPow();
+        TestRoot();
         TestFractional();
         TestComplicatedFormula_noBrackets();
         TestComplicatedFormula_root();
         TestComplicatedFormula_rootAndPower();
         TestErroneousFormula_rootTypoNoBrackets();
-*/
-/*
+
         // Boss fight
         TestComplicatedFormula_brackets();
         TestComplicatedFormula_bracketsBeforeRoot();
@@ -31,7 +31,7 @@ public:
         TestErroneousFormula_missingOpeningBracket();
         TestErroneousFormula_missingClosingBracket();
         TestErroneousFormula_missing_param();
-*/
+
         evaluateTestOutcomes();
     }
 
