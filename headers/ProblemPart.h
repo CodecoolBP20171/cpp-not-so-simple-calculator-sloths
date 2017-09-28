@@ -10,14 +10,10 @@ class ProblemPart {
 public:
     ProblemPart(std::string part, PartType  partType);
 
-    std::string getPart() { return part; }
+    PartType getType() { return partType; }
 
-    PartType getPartType() {return partType; }
+    double getNumber() { return stod(part); }
 
-    double getNumber() { return atof(part.c_str()); }
-    void setPartType(PartType partType) { this->partType; }
-
-    void print();
 private:
     std::string part;
     PartType partType;

@@ -1,6 +1,6 @@
 #ifndef CALCULATOR_TESTER_HPP
 #define CALCULATOR_TESTER_HPP
-#include "Calculator.h"
+#include "headers/Calculator.h"
 
 class Tester {
 public:
@@ -23,7 +23,6 @@ public:
         TestComplicatedFormula_root();
         TestComplicatedFormula_rootAndPower();
         TestErroneousFormula_rootTypoNoBrackets();
-
 
         // Boss fight
         TestComplicatedFormula_brackets();
@@ -126,10 +125,8 @@ private:
     void TestComplicatedFormula_brackets()
     {
         Calculator c;
-        double result = c.evaluate("3*((1+1)*2+1)");
-//        double result = c.evaluate("2root(22+(33-2root25+14)*2+(5-2))");
-        checkResult(15.0d, result, 0.01d);
-//        checkResult(10.4403d, result, 0.01d);
+        double result = c.evaluate("2root(22+(33-2root25+14)*2+(5-2))");
+        checkResult(10.4403d, result, 0.01d);
     }
 
     void TestComplicatedFormula_bracketsBeforeRoot()

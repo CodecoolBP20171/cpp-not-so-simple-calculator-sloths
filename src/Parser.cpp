@@ -2,7 +2,7 @@
 // Created by meszi on 2017.09.27..
 //
 
-#include "Parser.h"
+#include "../headers/Parser.h"
 
 std::vector<ProblemPart> Parser::parseProblem(std::string &problem) {
     problem = removeWhiteSpace(problem);
@@ -10,6 +10,9 @@ std::vector<ProblemPart> Parser::parseProblem(std::string &problem) {
         throw std::invalid_argument("Problem contains unexpected character(s)!\n");
     }
     std::vector<ProblemPart> problemParts = generateProblemParts(problem);
+    if (!(problemParts[0].getType() == NUMBER || problemParts[0].getType() == OPENING_BRACKET)) {
+        throw std::invalid_argument("Problem cannot start with an operation!\n");
+    }
     validateBracket(problemParts);
     return problemParts;
 }
@@ -21,75 +24,23 @@ std::vector<ProblemPart> Parser::generateProblemParts(const std::string &problem
 
     for (char character : problem) {
         if (isANumber(character)) {
-            if (!currentOperation.empty()) {
-                PartType operationType = getOperationType(currentOperation);
-                problemParts.push_back(ProblemPart(currentOperation, operationType));
-                currentOperation.clear();
-            }
+            addNewOperation(problemParts, currentOperation);
             currentNumber += character;
         } else if (isABracket(character)) {
-            if (!currentNumber.empty()) {
-                problemParts.push_back(ProblemPart(currentNumber, NUMBER));
-                currentNumber.clear();
-            }
-            if (!currentOperation.empty()) {
-                PartType operationType = getOperationType(currentOperation);
-                problemParts.push_back(ProblemPart(currentOperation, operationType));
-                currentOperation.clear();
-            }
-            problemParts.push_back(parseBracket(problemParts, character));
+            addNewNumber(problemParts, currentNumber);
+            addNewOperation(problemParts, currentOperation);
+            addNewBracket(problemParts, character);
         } else {
-            if (!currentNumber.empty()) {
-                problemParts.push_back(ProblemPart(currentNumber, NUMBER));
-                currentNumber.clear();
-            }
+            addNewNumber(problemParts, currentNumber);
             currentOperation += character;
             if (currentOperation.length() > 4) {
                 throw std::invalid_argument("Missing parameter!\n");
             }
         }
     }
-    if (!currentNumber.empty()) {
-        problemParts.push_back(ProblemPart(currentNumber, NUMBER));
-        currentNumber.clear();
-    }
-
-//    bool checkingForNumber = false;
-//    std::string substring;
-//    for (char character : problem) {
-//        if (checkingForNumber) {
-//            if (isANumber(character)) {
-//                substring += character;
-//            } else {
-//                problemParts.push_back(ProblemPart(substring, NUMBER));
-//                substring = "";
-//                checkingForNumber = false;
-//            }
-//        }
-//        if (!checkingForNumber) {
-//            if (!isANumber(character)) {
-//                if (isABracket(character)) {
-//                    if (isANumber(substring[0])) {
-//                        problemParts.push_back(ProblemPart(substring, NUMBER));
-//                    } else {
-//                        PartType operationType = getOperationType(substring);
-//                        problemParts.push_back(ProblemPart(substring, operationType));
-//                    }
-//                    substring = "";
-//                    problemParts.push_back(parseBracket(problemParts, character));
-//                } else {
-//                    substring += character;
-//                }
-//            } else {
-//                PartType operationType = getOperationType(substring);
-//                problemParts.push_back(ProblemPart(substring, operationType));
-//                substring = character;
-//                checkingForNumber = true;
-//            }
-//        }
-//    }
-//    problemParts.push_back(ProblemPart(substring, NUMBER));
-
+    // After iterating through the whole string, there isn't any
+    // operators or brackets to trigger saving the last number.
+    addNewNumber(problemParts, currentNumber);
     return problemParts;
 }
 
@@ -121,6 +72,11 @@ bool Parser::isANumber(char &character) {
     return true;
 }
 
+bool Parser::isABracket(char &character) {
+    if (character == '(' || character == ')') return true;
+    return false;
+}
+
 PartType Parser::getOperationType(std::string &substring) {
     switch (substring[0]) {
         case '+':
@@ -138,35 +94,28 @@ PartType Parser::getOperationType(std::string &substring) {
     }
 }
 
-bool Parser::isABracket(char &character) {
-    if (character == '(' || character == ')') {
-        return true;
-    }
-    return false;
-}
-
-ProblemPart Parser::parseBracket(std::vector<ProblemPart> &problemParts, char &character) {
+void Parser::addNewBracket(std::vector<ProblemPart> &problemParts, char &character) {
     bool openingBracket = character == '(' ? true : false;
     std::string newPart("");
     if (openingBracket) {
         newPart += character;
-        return ProblemPart(newPart, OPENING_BRACKET);
+        problemParts.push_back(ProblemPart(newPart, OPENING_BRACKET));
     } else {
         int numOfOpeningBrackets = 0;
         int numOfClosingBrackets = 0;
 
         for (ProblemPart part : problemParts) {
-            if (part.getPartType() == OPENING_BRACKET) {
+            if (part.getType() == OPENING_BRACKET) {
                 ++numOfOpeningBrackets;
                 continue;
-            } else if (part.getPartType() == CLOSING_BRACKET) {
+            } else if (part.getType() == CLOSING_BRACKET) {
                 ++numOfClosingBrackets;
             }
         }
 
         if (numOfOpeningBrackets > numOfClosingBrackets) {
             newPart += character;
-            return ProblemPart(newPart, CLOSING_BRACKET);
+            problemParts.push_back(ProblemPart(newPart, CLOSING_BRACKET));
         } else {
             throw std::invalid_argument("Missing opening bracket!\n");
         }
@@ -179,10 +128,10 @@ void Parser::validateBracket(std::vector<ProblemPart> &problemParts) {
     bool previousIsOpening = false;
 
     for (ProblemPart part : problemParts) {
-        if (part.getPartType() == OPENING_BRACKET) {
+        if (part.getType() == OPENING_BRACKET) {
             ++numOfOpeningBrackets;
             previousIsOpening = true;
-        }else if (part.getPartType() == CLOSING_BRACKET) {
+        }else if (part.getType() == CLOSING_BRACKET) {
             ++numOfClosingBrackets;
             if (previousIsOpening) {
                 throw std::invalid_argument("Empty bracket!\n");
@@ -195,5 +144,20 @@ void Parser::validateBracket(std::vector<ProblemPart> &problemParts) {
 
     if (numOfClosingBrackets != numOfOpeningBrackets) {
         throw std::invalid_argument("Missing closing bracket!\n");
+    }
+}
+
+void Parser::addNewNumber(std::vector<ProblemPart> &problemParts, std::string &number) {
+    if (!number.empty()) {
+        problemParts.push_back(ProblemPart(number, NUMBER));
+        number.clear();
+    }
+}
+
+void Parser::addNewOperation(std::vector<ProblemPart> &problemParts, std::string &operation) {
+    if (!operation.empty()) {
+        PartType operationType = getOperationType(operation);
+        problemParts.push_back(ProblemPart(operation, operationType));
+        operation.clear();
     }
 }

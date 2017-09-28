@@ -19,15 +19,19 @@ private:
 
     bool isAValidProblem(std::string &problem);
 
-    bool isANumber(char &character);
-
     std::vector<ProblemPart> generateProblemParts(const std::string &problem);
 
-    PartType getOperationType(std::string &substring);
+    bool isANumber(char &character);
 
     bool isABracket(char &character);
 
-    ProblemPart parseBracket(std::vector<ProblemPart> &problemParts, char &character);
+    PartType getOperationType(std::string &substring);
+
+    void addNewNumber(std::vector<ProblemPart> &problemParts, std::string &number);
+
+    void addNewOperation(std::vector<ProblemPart> &problemParts, std::string &operation);
+
+    void addNewBracket(std::vector<ProblemPart> &problemParts, char &character);
 
     void validateBracket(std::vector<ProblemPart> &problemParts);
 };
