@@ -7,23 +7,24 @@ public:
     void run()
     {
         failedTests = 0;
+
         // Level 0
         TestAddition();
         TestSubtraction();
         TestMultiplication();
         TestDivision();
         TestFormulaWithSpaces();
-/*
+
         // Level 1
-        TestRoot();
         TestPow();
+        TestRoot();
         TestFractional();
         TestComplicatedFormula_noBrackets();
         TestComplicatedFormula_root();
         TestComplicatedFormula_rootAndPower();
         TestErroneousFormula_rootTypoNoBrackets();
-*/
-/*
+
+
         // Boss fight
         TestComplicatedFormula_brackets();
         TestComplicatedFormula_bracketsBeforeRoot();
@@ -31,7 +32,7 @@ public:
         TestErroneousFormula_missingOpeningBracket();
         TestErroneousFormula_missingClosingBracket();
         TestErroneousFormula_missing_param();
-*/
+
         evaluateTestOutcomes();
     }
 
@@ -125,8 +126,10 @@ private:
     void TestComplicatedFormula_brackets()
     {
         Calculator c;
-        double result = c.evaluate("2root(22+(33-2root25+14)*2+(5-2))");
-        checkResult(10.4403d, result, 0.01d);
+        double result = c.evaluate("3*((1+1)*2+1)");
+//        double result = c.evaluate("2root(22+(33-2root25+14)*2+(5-2))");
+        checkResult(15.0d, result, 0.01d);
+//        checkResult(10.4403d, result, 0.01d);
     }
 
     void TestComplicatedFormula_bracketsBeforeRoot()

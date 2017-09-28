@@ -44,6 +44,9 @@ std::vector<ProblemPart> Parser::generateProblemParts(const std::string &problem
                 currentNumber.clear();
             }
             currentOperation += character;
+            if (currentOperation.length() > 4) {
+                throw std::invalid_argument("Missing parameter!\n");
+            }
         }
     }
     if (!currentNumber.empty()) {

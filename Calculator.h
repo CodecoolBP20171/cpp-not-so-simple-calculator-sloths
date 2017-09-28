@@ -24,6 +24,8 @@ private:
     void solveFirstDegreeOperation(std::vector<ProblemPart> &problemParts);
 
     void solveParentheses(std::vector<ProblemPart> &problemParts);
+
+    bool nextToNumbers(std::vector<ProblemPart> &problemParts, int index);
 };
 
 

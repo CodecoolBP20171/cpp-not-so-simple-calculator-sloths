@@ -17,7 +17,6 @@ double Calculator::evaluate(std::string problem) {
 }
 
 std::vector<ProblemPart> Calculator::solveSingleOperation(std::vector<ProblemPart> &problemParts) {
-//    cout << "problem entering into solveSingleOp" << endl;
 //    for (ProblemPart part : problemParts) {
 //        part.print();
 //    }
@@ -35,6 +34,9 @@ void Calculator::solveFirstDegreeOperation(std::vector<ProblemPart> &problemPart
     for (ProblemPart part : problemParts) {
 
         if (part.getPartType() == ADDITION) {
+            if(!nextToNumbers(problemParts, index)) {
+                throw std::invalid_argument("Missing parameter!");
+            }
             newNumber = problemParts.at(index - 1).getNumber() + problemParts.at(index + 1).getNumber();
 //            cout << "New number : " << newNumber << endl;
             updateProblemParts(problemParts, index, newNumber);
@@ -44,6 +46,9 @@ void Calculator::solveFirstDegreeOperation(std::vector<ProblemPart> &problemPart
             }
         }
         else if (part.getPartType() == SUBTRACTION) {
+            if(!nextToNumbers(problemParts, index)) {
+                throw std::invalid_argument("Missing parameter!");
+            }
             newNumber = problemParts.at(index - 1).getNumber() - problemParts.at(index + 1).getNumber();
 //            cout << "New number : " << newNumber << endl;
             updateProblemParts(problemParts, index, newNumber);
@@ -62,6 +67,9 @@ void Calculator::solveSecondDegreeOperation(std::vector<ProblemPart> &problemPar
     for (ProblemPart part : problemParts) {
 
         if (part.getPartType() == DIVISION) {
+            if(!nextToNumbers(problemParts, index)) {
+                throw std::invalid_argument("Missing parameter!");
+            }
             newNumber = problemParts.at(index - 1).getNumber() / problemParts.at(index + 1).getNumber();
 //            cout << "New number : " << newNumber << endl;
             updateProblemParts(problemParts, index, newNumber);
@@ -71,6 +79,9 @@ void Calculator::solveSecondDegreeOperation(std::vector<ProblemPart> &problemPar
             }
         }
         else if (part.getPartType() == MULTIPLICATION) {
+            if(!nextToNumbers(problemParts, index)) {
+                throw std::invalid_argument("Missing parameter!");
+            }
             newNumber = problemParts.at(index - 1).getNumber() * problemParts.at(index + 1).getNumber();
 //            cout << "New number : " << newNumber << endl;
             updateProblemParts(problemParts, index, newNumber);
@@ -89,6 +100,9 @@ void Calculator::solveThirdDegreeOperation(std::vector<ProblemPart> &problemPart
     for (ProblemPart part : problemParts) {
 
         if (part.getPartType() == POWER) {
+            if(!nextToNumbers(problemParts, index)) {
+                throw std::invalid_argument("Missing parameter!");
+            }
             newNumber = pow(problemParts.at(index - 1).getNumber(), problemParts.at(index + 1).getNumber());
 //            cout << "New number : " << newNumber << endl;
             updateProblemParts(problemParts, index, newNumber);
@@ -98,6 +112,9 @@ void Calculator::solveThirdDegreeOperation(std::vector<ProblemPart> &problemPart
             }
         }
         else if (part.getPartType() == ROOT) {
+            if(!nextToNumbers(problemParts, index)) {
+                throw std::invalid_argument("Missing parameter!");
+            }
             newNumber = pow(problemParts.at(index + 1).getNumber(), 1.0/problemParts.at(index - 1).getNumber());
 //            cout << "New number : " << newNumber << endl;
             updateProblemParts(problemParts, index, newNumber);
@@ -150,4 +167,12 @@ void Calculator::solveParentheses(std::vector<ProblemPart> &problemParts) {
             }
         }
     }
+}
+
+bool Calculator::nextToNumbers(std::vector<ProblemPart> &problemParts, int index) {
+    if (problemParts[index-1].getPartType() == NUMBER &&
+        problemParts[index+1].getPartType() == NUMBER) {
+        return true;
+    }
+    return false;
 }
