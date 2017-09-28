@@ -16,42 +16,76 @@ std::vector<ProblemPart> Parser::parseProblem(std::string &problem) {
 
 std::vector<ProblemPart> Parser::generateProblemParts(const std::string &problem) {
     std::vector<ProblemPart> problemParts;
+    std::string currentNumber;
+    std::string currentOperation;
 
-    bool checkingForNumber = true;
-    std::string substring;
     for (char character : problem) {
-        if (checkingForNumber) {
-            if (isANumber(character)) {
-                substring += character;
-            } else {
-                problemParts.push_back(ProblemPart(substring, NUMBER));
-                substring = "";
-                checkingForNumber = false;
+        if (isANumber(character)) {
+            if (!currentOperation.empty()) {
+                PartType operationType = getOperationType(currentOperation);
+                problemParts.push_back(ProblemPart(currentOperation, operationType));
+                currentOperation.clear();
             }
-        }
-        if (!checkingForNumber) {
-            if (!isANumber(character)) {
-                if (isABracket(character)) {
-                    if (isANumber(substring[0])) {
-                        problemParts.push_back(ProblemPart(substring, NUMBER));
-                    } else {
-                        PartType operationType = getOperationType(substring);
-                        problemParts.push_back(ProblemPart(substring, operationType));
-                    }
-                    substring = "";
-                    problemParts.push_back(parseBracket(problemParts, character));
-                } else {
-                    substring += character;
-                }
-            } else {
-                PartType operationType = getOperationType(substring);
-                problemParts.push_back(ProblemPart(substring, operationType));
-                substring = character;
-                checkingForNumber = true;
+            currentNumber += character;
+        } else if (isABracket(character)) {
+            if (!currentNumber.empty()) {
+                problemParts.push_back(ProblemPart(currentNumber, NUMBER));
+                currentNumber.clear();
             }
+            if (!currentOperation.empty()) {
+                PartType operationType = getOperationType(currentOperation);
+                problemParts.push_back(ProblemPart(currentOperation, operationType));
+                currentOperation.clear();
+            }
+            problemParts.push_back(parseBracket(problemParts, character));
+        } else {
+            if (!currentNumber.empty()) {
+                problemParts.push_back(ProblemPart(currentNumber, NUMBER));
+                currentNumber.clear();
+            }
+            currentOperation += character;
         }
     }
-    problemParts.push_back(ProblemPart(substring, NUMBER));
+    if (!currentNumber.empty()) {
+        problemParts.push_back(ProblemPart(currentNumber, NUMBER));
+        currentNumber.clear();
+    }
+
+//    bool checkingForNumber = false;
+//    std::string substring;
+//    for (char character : problem) {
+//        if (checkingForNumber) {
+//            if (isANumber(character)) {
+//                substring += character;
+//            } else {
+//                problemParts.push_back(ProblemPart(substring, NUMBER));
+//                substring = "";
+//                checkingForNumber = false;
+//            }
+//        }
+//        if (!checkingForNumber) {
+//            if (!isANumber(character)) {
+//                if (isABracket(character)) {
+//                    if (isANumber(substring[0])) {
+//                        problemParts.push_back(ProblemPart(substring, NUMBER));
+//                    } else {
+//                        PartType operationType = getOperationType(substring);
+//                        problemParts.push_back(ProblemPart(substring, operationType));
+//                    }
+//                    substring = "";
+//                    problemParts.push_back(parseBracket(problemParts, character));
+//                } else {
+//                    substring += character;
+//                }
+//            } else {
+//                PartType operationType = getOperationType(substring);
+//                problemParts.push_back(ProblemPart(substring, operationType));
+//                substring = character;
+//                checkingForNumber = true;
+//            }
+//        }
+//    }
+//    problemParts.push_back(ProblemPart(substring, NUMBER));
 
     return problemParts;
 }
